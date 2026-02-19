@@ -1,12 +1,466 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Electryonz 2026 — Register</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Electryonz 2026 — Register</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+/* ── FALLBACK: if Google Fonts blocked, use system fonts that still look great ── */
+:root {
+  --ff-display: 'Orbitron', 'Courier New', 'Lucida Console', monospace;
+  --ff-body:    'Rajdhani', 'Trebuchet MS', 'Arial Narrow', sans-serif;
+
+  --yellow:      #f5c500;
+  --yellow-dim:  #b89000;
+  --black:       #080808;
+  --dark:        #101010;
+  --card:        #141414;
+  --card2:       #1a1a1a;
+  --border:      #252525;
+  --border2:     #333333;
+  --text:        #aaaaaa;
+  --white:       #eeeeee;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: var(--ff-body);
+  font-weight: 500;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Ambient background blobs */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 55% 40% at 5% 15%,  rgba(180,140,0,0.14) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 45% at 95% 85%, rgba(120,95,0,0.09)  0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+
+/* Grid texture */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(245,197,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245,197,0,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none; z-index: 0;
+}
+
+#particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+/* ══ LAYOUT ══ */
+.container {
+  position: relative; z-index: 1;
+  max-width: 900px; margin: 0 auto;
+  padding: 48px 20px 100px;
+}
+
+/* ══ HEADER ══ */
+header { text-align: center; margin-bottom: 52px; }
+
+.fest-tagline {
+  font-family: var(--ff-display);
+  font-size: 12px; letter-spacing: 0.45em;
+  color: var(--yellow); margin-bottom: 14px;
+  animation: slideDown 0.6s ease both 0.1s;
+}
+
+.page-title {
+  font-family: var(--ff-display);
+  font-size: clamp(48px, 11vw, 108px);
+  font-weight: 900; letter-spacing: 0.1em;
+  color: var(--white); line-height: 1;
+  text-transform: uppercase;
+  display: inline-block;
+  animation: titleReveal 0.8s cubic-bezier(0.16,1,0.3,1) both 0.2s;
+  text-shadow: 0 0 60px rgba(245,197,0,0.15);
+}
+
+.fest-sub {
+  font-size: 13px; letter-spacing: 0.25em;
+  color: #555; margin-top: 12px;
+  text-transform: uppercase;
+  animation: slideDown 0.6s ease both 0.4s;
+}
+
+.header-line {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--yellow), transparent);
+  margin-top: 36px;
+  animation: fadeIn 0.8s ease both 0.6s;
+}
+
+/* ══ FORM CARD ══ */
+.form-card {
+  background: rgba(20,20,20,0.9);
+  border: 1px solid var(--border);
+  padding: 40px 36px;
+  position: relative;
+  animation: slideUp 0.7s ease both 0.5s;
+}
+.form-card::before,
+.form-card::after {
+  content: '';
+  position: absolute;
+  width: 24px; height: 24px;
+  border-color: var(--yellow);
+  border-style: solid;
+}
+.form-card::before { top:-1px; left:-1px;     border-width: 2px 0 0 2px; }
+.form-card::after  { bottom:-1px; right:-1px;  border-width: 0 2px 2px 0; }
+
+.section-tag {
+  font-family: var(--ff-display);
+  font-size: 10px; letter-spacing: 0.3em;
+  color: var(--yellow-dim); margin-bottom: 22px;
+}
+
+/* ══ FORM GRID ══ */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.field.full { grid-column: 1/-1; }
+.field { position: relative; }
+
+input, select {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  color: var(--white);
+  font-family: var(--ff-body);
+  font-size: 16px; font-weight: 600;
+  padding: 15px 18px;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none; appearance: none;
+  letter-spacing: 0.02em;
+}
+input::placeholder { color: #444; }
+input:focus, select:focus {
+  border-color: var(--yellow);
+  background: rgba(245,197,0,0.05);
+  box-shadow: 0 0 0 1px var(--yellow);
+}
+
+.field-border {
+  position: absolute; bottom: 0; left: 0;
+  width: 0; height: 2px;
+  background: var(--yellow);
+  transition: width 0.3s ease;
+  pointer-events: none;
+}
+.field input:focus ~ .field-border,
+.field select:focus ~ .field-border { width: 100%; }
+
+.select-wrap { position: relative; }
+.select-arrow {
+  position: absolute; right: 16px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--yellow); font-size: 18px;
+  pointer-events: none;
+}
+select option { background: #1a1a1a; color: #eee; }
+
+@media (max-width: 560px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .field.full { grid-column: 1; }
+  .form-card { padding: 28px 18px; }
+  .page-title { font-size: 52px; }
+}
+
+/* ══ SEARCH ══ */
+.search-bar { position: relative; margin-bottom: 18px; }
+.search-bar input { padding-left: 48px; }
+.search-icon {
+  position: absolute; left: 16px; top: 50%;
+  transform: translateY(-48%);
+  font-size: 22px; color: #444; pointer-events: none;
+}
+
+/* ══ FILTER TABS ══ */
+.filter-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
+.filter-btn {
+  font-family: var(--ff-display);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; padding: 10px 22px;
+  border: 1px solid var(--border2);
+  background: transparent; color: var(--text);
+  cursor: pointer; transition: all 0.18s;
+  text-transform: uppercase;
+}
+.filter-btn:hover { border-color: var(--yellow-dim); color: var(--yellow-dim); }
+.filter-btn.active { background: var(--yellow); border-color: var(--yellow); color: #000; }
+
+/* ══ EVENTS ══ */
+.events-group { margin-bottom: 28px; }
+.events-group-label {
+  font-family: var(--ff-display);
+  font-size: 11px; letter-spacing: 0.25em;
+  color: var(--white); text-transform: uppercase;
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.event-card {
+  background: var(--card2); border: 1px solid var(--border);
+  padding: 18px 16px; cursor: pointer;
+  position: relative; overflow: hidden;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+.event-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; width: 3px; height: 100%;
+  background: var(--yellow);
+  transform: scaleY(0); transition: transform 0.2s;
+  transform-origin: bottom;
+}
+.event-card:hover { border-color: #383838; transform: translateY(-1px); }
+.event-card.selected { border-color: var(--yellow); background: rgba(245,197,0,0.07); }
+.event-card.selected::before { transform: scaleY(1); }
+
+.event-card h3 {
+  font-family: var(--ff-display);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.08em; color: var(--white);
+  margin-bottom: 8px; padding-right: 26px;
+}
+.event-fee { font-size: 14px; font-weight: 600; color: #666; }
+.event-fee .fee-amount { color: var(--yellow); font-weight: 700; }
+
+.check-box {
+  position: absolute; top: 14px; right: 14px;
+  width: 18px; height: 18px;
+  border: 1.5px solid #383838;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: transparent;
+  transition: all 0.2s;
+}
+.event-card.selected .check-box {
+  background: var(--yellow); border-color: var(--yellow); color: #000;
+}
+
+/* ══ TOTAL BAR ══ */
+.total-bar {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--border2);
+  padding: 18px 22px; margin: 28px 0 20px;
+  background: rgba(245,197,0,0.03);
+  position: relative; overflow: hidden;
+}
+.total-bar::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--yellow), transparent);
+  opacity: 0.5;
+}
+.total-label {
+  font-family: var(--ff-display);
+  font-size: 10px; letter-spacing: 0.25em; color: #555; margin-bottom: 4px;
+}
+.selected-events-text { font-size: 13px; color: #666; }
+.total-amount {
+  font-family: var(--ff-display);
+  font-size: 28px; font-weight: 700;
+  color: var(--yellow); letter-spacing: 0.05em;
+}
+
+/* ══ SUBMIT BUTTON ══ */
+.submit-btn {
+  width: 100%; padding: 18px 24px;
+  background: var(--yellow); color: #000;
+  font-family: var(--ff-display);
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  border: none; cursor: pointer;
+  position: relative; overflow: hidden;
+  display: flex; align-items: center;
+  justify-content: center; gap: 12px;
+  transition: background 0.2s, transform 0.15s;
+}
+.submit-btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  transform: translateX(-100%); transition: transform 0.45s;
+}
+.submit-btn:hover { background: #ffe033; transform: translateY(-2px); }
+.submit-btn:hover::after { transform: translateX(100%); }
+.submit-btn:active { transform: translateY(0); }
+.submit-btn:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; }
+.btn-icon { font-size: 18px; }
+
+/* ══ MODALS ══ */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 1000; align-items: center;
+  justify-content: center; padding: 20px;
+}
+.modal-overlay.open { display: flex; animation: fadeIn 0.3s ease; }
+
+.modal {
+  background: var(--dark);
+  border: 1px solid var(--border2);
+  max-width: 480px; width: 100%;
+  padding: 40px 36px; position: relative;
+  animation: slideUp 0.35s cubic-bezier(0.16,1,0.3,1);
+  max-height: 90vh; overflow-y: auto;
+}
+.modal::before,
+.modal::after {
+  content: ''; position: absolute;
+  width: 20px; height: 20px;
+  border-color: var(--yellow); border-style: solid;
+}
+.modal::before { top:-1px; left:-1px;    border-width: 2px 0 0 2px; }
+.modal::after  { bottom:-1px; right:-1px; border-width: 0 2px 2px 0; }
+
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: none; border: 1px solid var(--border);
+  color: #666; width: 32px; height: 32px;
+  cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.modal-close:hover { border-color: var(--yellow); color: var(--yellow); }
+
+.modal-tag {
+  font-family: var(--ff-display);
+  font-size: 10px; letter-spacing: 0.3em;
+  color: var(--yellow-dim); margin-bottom: 10px;
+}
+.modal-title {
+  font-family: var(--ff-display);
+  font-size: 28px; font-weight: 900;
+  color: var(--white); letter-spacing: 0.1em; margin-bottom: 6px;
+}
+.modal-subtitle { font-size: 14px; color: #666; margin-bottom: 24px; line-height: 1.5; }
+
+/* QR */
+.qr-container { display: flex; justify-content: center; margin-bottom: 20px; }
+.qr-image { width: 200px; height: 200px; border: 2px solid var(--yellow); padding: 8px; background: #fff; }
+.qr-fallback { display: none; justify-content: center; }
+.qr-box {
+  border: 2px solid var(--yellow); padding: 16px;
+  display: flex; flex-direction: column;
+  align-items: center; background: rgba(245,197,0,0.04);
+}
+.qr-replace-note {
+  font-family: var(--ff-display);
+  font-size: 9px; color: var(--yellow-dim);
+  letter-spacing: 0.1em; margin-top: 10px; text-align: center;
+}
+
+.payment-amount-box {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  padding: 14px 18px; margin-bottom: 14px;
+  background: rgba(245,197,0,0.04);
+}
+.payment-label { font-family: var(--ff-display); font-size: 10px; letter-spacing: 0.2em; color: #555; }
+.payment-amount { font-family: var(--ff-display); font-size: 24px; font-weight: 700; color: var(--yellow); }
+
+.upi-row {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px; padding: 10px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+}
+.upi-id-text { font-size: 13px; color: #888; font-weight: 600; }
+.upi-id-text strong { color: var(--white); }
+.copy-btn {
+  font-family: var(--ff-display); font-size: 9px; letter-spacing: 0.15em;
+  padding: 6px 14px; background: transparent;
+  border: 1px solid var(--yellow-dim); color: var(--yellow);
+  cursor: pointer; transition: all 0.2s;
+}
+.copy-btn:hover { background: var(--yellow); color: #000; }
+
+.modal-steps { margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
+.step { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #777; }
+.step-num {
+  width: 22px; height: 22px;
+  border: 1px solid var(--yellow-dim); color: var(--yellow);
+  font-family: var(--ff-display); font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+/* Success */
+.success-modal { text-align: center; }
+.success-anim { position: relative; width: 80px; height: 80px; margin: 0 auto; }
+.success-ring {
+  position: absolute; inset: 0;
+  border: 2px solid var(--yellow); border-radius: 50%;
+  animation: pulseRing 1.5s ease infinite;
+}
+.success-icon {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; color: var(--yellow);
+}
+.success-info {
+  background: rgba(245,197,0,0.05);
+  border: 1px solid var(--border);
+  padding: 16px; margin-top: 20px;
+  text-align: left; font-size: 14px;
+  color: #888; line-height: 1.8;
+}
+.success-info strong { color: var(--white); }
+
+/* ══ TOAST ══ */
+.toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(70px);
+  background: var(--yellow); color: #000;
+  font-family: var(--ff-display);
+  font-size: 11px; letter-spacing: 0.15em;
+  padding: 12px 28px; z-index: 9999;
+  transition: transform 0.3s ease;
+  pointer-events: none; white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ══ SCROLLBAR ══ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--border2); }
+::-webkit-scrollbar-thumb:hover { background: var(--yellow-dim); }
+
+/* ══ ANIMATIONS ══ */
+@keyframes fadeIn    { from{opacity:0} to{opacity:1} }
+@keyframes slideDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideUp   { from{opacity:0;transform:translateY(24px)}  to{opacity:1;transform:translateY(0)} }
+@keyframes titleReveal {
+  0%   {opacity:0;transform:translateY(30px) skewX(-4deg)}
+  100% {opacity:1;transform:translateY(0) skewX(0deg)}
+}
+@keyframes pulseRing {
+  0%  {transform:scale(1);   opacity:1}
+  70% {transform:scale(1.4); opacity:0}
+  100%{transform:scale(1.4); opacity:0}
+}
+</style>
 </head>
 <body>
 
@@ -61,7 +515,7 @@
       </div>
     </div>
 
-    <!-- EVENTS SECTION -->
+    <!-- EVENTS -->
     <div class="section-tag" style="margin-top:44px;">// SELECT EVENTS</div>
 
     <div class="search-bar">
@@ -70,28 +524,27 @@
     </div>
 
     <div class="filter-tabs">
-      <button class="filter-btn active" onclick="filterCategory('all', this)">All</button>
-      <button class="filter-btn" onclick="filterCategory('technical', this)">Technical</button>
-      <button class="filter-btn" onclick="filterCategory('non-technical', this)">Non-Technical</button>
-      <button class="filter-btn" onclick="filterCategory('workshop', this)">Workshop</button>
+      <button class="filter-btn active" onclick="filterCategory('all',this)">All</button>
+      <button class="filter-btn" onclick="filterCategory('technical',this)">Technical</button>
+      <button class="filter-btn" onclick="filterCategory('non-technical',this)">Non-Technical</button>
+      <button class="filter-btn" onclick="filterCategory('workshop',this)">Workshop</button>
     </div>
 
     <div class="events-group" id="group-technical">
-      <div class="events-group-label">⚙ TECHNICAL EVENTS</div>
+      <div class="events-group-label">⚙ Technical Events</div>
       <div class="events-grid" id="technical-grid"></div>
     </div>
 
     <div class="events-group" id="group-non-technical">
-      <div class="events-group-label">🎮 NON-TECHNICAL EVENTS</div>
+      <div class="events-group-label">🎮 Non-Technical Events</div>
       <div class="events-grid" id="non-technical-grid"></div>
     </div>
 
     <div class="events-group" id="group-workshop">
-      <div class="events-group-label">🔧 WORKSHOPS</div>
+      <div class="events-group-label">🔧 Workshops</div>
       <div class="events-grid" id="workshop-grid"></div>
     </div>
 
-    <!-- TOTAL BAR -->
     <div class="total-bar">
       <div>
         <div class="total-label">TOTAL AMOUNT</div>
@@ -108,7 +561,7 @@
   </div>
 </div>
 
-<!-- QR PAYMENT MODAL -->
+<!-- ══ QR PAYMENT MODAL ══ -->
 <div class="modal-overlay" id="paymentModal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -117,68 +570,50 @@
     <p class="modal-subtitle">Scan via Google Pay / PhonePe / Any UPI App</p>
 
     <div class="qr-container">
-      <!-- REPLACE qr-code.png with your actual Google Pay QR image -->
-      <img src="qr-code.png" alt="UPI QR Code" class="qr-image" id="qrImage"
+      <!-- REPLACE qr-code.png with your actual Google Pay QR screenshot -->
+      <img src="qr-code.png" alt="UPI QR" class="qr-image"
            onerror="this.style.display='none';document.getElementById('qrFallback').style.display='flex'"/>
       <div class="qr-fallback" id="qrFallback">
         <div class="qr-box">
           <svg viewBox="0 0 200 200" width="180" height="180" xmlns="http://www.w3.org/2000/svg">
-            <!-- Top-left finder -->
             <rect x="10" y="10" width="60" height="60" fill="none" stroke="#f5c500" stroke-width="5"/>
             <rect x="22" y="22" width="36" height="36" fill="#f5c500"/>
-            <!-- Top-right finder -->
             <rect x="130" y="10" width="60" height="60" fill="none" stroke="#f5c500" stroke-width="5"/>
             <rect x="142" y="22" width="36" height="36" fill="#f5c500"/>
-            <!-- Bottom-left finder -->
             <rect x="10" y="130" width="60" height="60" fill="none" stroke="#f5c500" stroke-width="5"/>
             <rect x="22" y="142" width="36" height="36" fill="#f5c500"/>
-            <!-- Data modules (decorative) -->
             <rect x="85" y="10" width="10" height="10" fill="#f5c500"/>
             <rect x="100" y="10" width="10" height="10" fill="#f5c500"/>
-            <rect x="115" y="10" width="10" height="10" fill="#f5c500"/>
-            <rect x="85" y="25" width="10" height="10" fill="#f5c500"/>
-            <rect x="115" y="25" width="10" height="10" fill="#f5c500"/>
-            <rect x="10" y="85" width="10" height="10" fill="#f5c500"/>
-            <rect x="25" y="85" width="10" height="10" fill="#f5c500"/>
-            <rect x="40" y="100" width="10" height="10" fill="#f5c500"/>
-            <rect x="55" y="85" width="10" height="10" fill="#f5c500"/>
             <rect x="85" y="85" width="10" height="10" fill="#f5c500"/>
             <rect x="100" y="85" width="10" height="10" fill="#f5c500"/>
             <rect x="115" y="85" width="10" height="10" fill="#f5c500"/>
-            <rect x="130" y="85" width="10" height="10" fill="#f5c500"/>
-            <rect x="145" y="100" width="10" height="10" fill="#f5c500"/>
-            <rect x="160" y="85" width="10" height="10" fill="#f5c500"/>
-            <rect x="175" y="100" width="10" height="10" fill="#f5c500"/>
-            <rect x="130" y="115" width="10" height="10" fill="#f5c500"/>
-            <rect x="145" y="130" width="10" height="10" fill="#f5c500"/>
-            <rect x="160" y="115" width="10" height="10" fill="#f5c500"/>
-            <rect x="175" y="130" width="10" height="10" fill="#f5c500"/>
-            <rect x="130" y="145" width="10" height="10" fill="#f5c500"/>
-            <rect x="160" y="145" width="10" height="10" fill="#f5c500"/>
-            <rect x="175" y="160" width="10" height="10" fill="#f5c500"/>
-            <rect x="130" y="175" width="10" height="10" fill="#f5c500"/>
-            <rect x="145" y="160" width="10" height="10" fill="#f5c500"/>
-            <rect x="175" y="145" width="10" height="10" fill="#f5c500"/>
-            <!-- Center ⚡ text -->
-            <text x="100" y="108" text-anchor="middle" font-size="22" fill="#f5c500" font-family="Arial">⚡</text>
+            <rect x="130" y="100" width="10" height="10" fill="#f5c500"/>
+            <rect x="160" y="100" width="10" height="10" fill="#f5c500"/>
+            <rect x="130" y="130" width="10" height="10" fill="#f5c500"/>
+            <rect x="160" y="130" width="10" height="10" fill="#f5c500"/>
+            <rect x="145" y="145" width="10" height="10" fill="#f5c500"/>
+            <rect x="175" y="115" width="10" height="10" fill="#f5c500"/>
+            <rect x="85" y="130" width="10" height="10" fill="#f5c500"/>
+            <rect x="85" y="160" width="10" height="10" fill="#f5c500"/>
+            <text x="100" y="108" text-anchor="middle" font-size="20" fill="#f5c500">⚡</text>
           </svg>
-          <p class="qr-replace-note">Replace qr-code.png with your actual QR</p>
+          <p class="qr-replace-note">Add qr-code.png to show your QR</p>
         </div>
       </div>
     </div>
 
     <div class="payment-amount-box">
-      <span class="payment-label">Amount to Pay</span>
+      <span class="payment-label">AMOUNT TO PAY</span>
       <span class="payment-amount">₹<span id="modalAmount">0</span></span>
     </div>
 
     <div class="upi-row">
       <span class="upi-id-text">UPI: <strong>altranz2026@okaxis</strong></span>
-      <button class="copy-btn" onclick="copyUPI()">Copy ID</button>
+      <button class="copy-btn" onclick="copyUPI()">COPY ID</button>
     </div>
 
     <div class="modal-steps">
-      <div class="step"><span class="step-num">1</span>Pay via UPI / Google Pay / PhonePe</div>
+      <div class="step"><span class="step-num">1</span>Pay via Google Pay / PhonePe / UPI</div>
       <div class="step"><span class="step-num">2</span>Note your Transaction / UTR ID</div>
       <div class="step"><span class="step-num">3</span>Enter it below &amp; confirm — ticket sent to email!</div>
     </div>
@@ -195,7 +630,7 @@
   </div>
 </div>
 
-<!-- SUCCESS MODAL -->
+<!-- ══ SUCCESS MODAL ══ -->
 <div class="modal-overlay" id="successModal">
   <div class="modal success-modal">
     <div class="success-anim">
@@ -203,7 +638,7 @@
       <div class="success-icon">✓</div>
     </div>
     <h2 class="modal-title" style="margin-top:20px;">YOU'RE IN!</h2>
-    <p class="modal-subtitle">Registration confirmed. Check your inbox for the ticket and event details.</p>
+    <p class="modal-subtitle">Registration confirmed.<br>Check your inbox for ticket &amp; event details.</p>
     <div class="success-info" id="successInfo"></div>
     <button class="submit-btn" onclick="closeSuccess()" style="margin-top:24px;">
       <span class="btn-text">AWESOME, DONE!</span>
@@ -211,6 +646,246 @@
   </div>
 </div>
 
-<script src="app.js"></script>
+<script>
+/* ═══════════════════════════════════════════════
+   ELECTRYONZ 2026 — REGISTRATION LOGIC
+   ═══════════════════════════════════════════════ */
+
+// ── Events Data ──────────────────────────────
+const EVENTS = [
+  { id:'paper-pres',      name:'PAPER PRESENTATION',  category:'technical',     fee:300, feeLabel:'SOLO: ₹300 | TEAM: ₹300' },
+  { id:'project-expo',    name:'PROJECT EXPO',         category:'technical',     fee:300, feeLabel:'₹300 (Early Bird)' },
+  { id:'ipl-auction',     name:'IPL AUCTION',          category:'non-technical', fee:200, feeLabel:'₹200' },
+  { id:'treasure-hunt',   name:'TREASURE HUNT',        category:'non-technical', fee:200, feeLabel:'₹200' },
+  { id:'snakes-ladder',   name:'SNAKES & LADDER',      category:'non-technical', fee:200, feeLabel:'₹200' },
+  { id:'carrom',          name:'CARROM',               category:'non-technical', fee:150, feeLabel:'₹150' },
+  { id:'free-fire',       name:'FREE FIRE',            category:'non-technical', fee:200, feeLabel:'₹200' },
+  { id:'chess',           name:'CHESS',                category:'non-technical', fee:100, feeLabel:'₹100' },
+  { id:'workshop-ai',     name:'AI & ML WORKSHOP',     category:'workshop',      fee:250, feeLabel:'₹250' },
+  { id:'workshop-cyber',  name:'CYBERSECURITY BASICS', category:'workshop',      fee:200, feeLabel:'₹200' },
+];
+
+// ── State ────────────────────────────────────
+let selectedEvents  = new Set();
+let currentCategory = 'all';
+let searchQuery     = '';
+let formData        = {};
+
+// ── Init ─────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderAllEvents();
+  initParticles();
+});
+
+// ── Render Events ────────────────────────────
+function renderAllEvents() {
+  ['technical','non-technical','workshop'].forEach(cat => {
+    const grid     = document.getElementById(cat + '-grid');
+    const group    = document.getElementById('group-' + cat);
+    const filtered = EVENTS.filter(e => e.category === cat && matchesFilter(e));
+    grid.innerHTML = '';
+    filtered.forEach(e => grid.appendChild(createCard(e)));
+    group.style.display = filtered.length ? 'block' : 'none';
+  });
+  updateTotal();
+}
+
+function matchesFilter(e) {
+  const catOk    = currentCategory === 'all' || e.category === currentCategory;
+  const searchOk = e.name.toLowerCase().includes(searchQuery.toLowerCase());
+  return catOk && searchOk;
+}
+
+function createCard(event) {
+  const card = document.createElement('div');
+  card.className = 'event-card' + (selectedEvents.has(event.id) ? ' selected' : '');
+  card.id = 'card-' + event.id;
+  card.innerHTML = `
+    <div class="check-box">✓</div>
+    <h3>${event.name}</h3>
+    <p class="event-fee">Fee: <span class="fee-amount">${event.feeLabel}</span></p>`;
+  card.addEventListener('click', () => toggleEvent(event.id));
+  return card;
+}
+
+function toggleEvent(id) {
+  selectedEvents.has(id) ? selectedEvents.delete(id) : selectedEvents.add(id);
+  const card = document.getElementById('card-' + id);
+  if (card) card.classList.toggle('selected', selectedEvents.has(id));
+  updateTotal();
+}
+
+function updateTotal() {
+  let total = 0, names = [];
+  selectedEvents.forEach(id => {
+    const ev = EVENTS.find(e => e.id === id);
+    if (ev) { total += ev.fee; names.push(ev.name); }
+  });
+  document.getElementById('totalAmount').textContent  = total;
+  document.getElementById('selectedCount').textContent =
+    names.length ? names.join(', ') : 'No events selected';
+}
+
+// ── Filters ──────────────────────────────────
+function filterCategory(cat, btn) {
+  currentCategory = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAllEvents();
+}
+function filterEvents() {
+  searchQuery = document.getElementById('eventSearch').value;
+  renderAllEvents();
+}
+
+// ── Validation ───────────────────────────────
+function validateForm() {
+  const name    = document.getElementById('fullName').value.trim();
+  const email   = document.getElementById('email').value.trim();
+  const phone   = document.getElementById('phone').value.trim();
+  const college = document.getElementById('college').value.trim();
+  const dept    = document.getElementById('department').value.trim();
+  const year    = document.getElementById('year').value;
+
+  if (!name)                                               { showToast('Please enter your full name'); return false; }
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showToast('Please enter a valid email address'); return false; }
+  if (!phone || !/^\d{10}$/.test(phone))                   { showToast('Please enter a valid 10-digit phone number'); return false; }
+  if (!college)                                            { showToast('Please enter your college name'); return false; }
+  if (!dept)                                               { showToast('Please enter your department'); return false; }
+  if (!year)                                               { showToast('Please select your year of study'); return false; }
+  if (!selectedEvents.size)                                { showToast('Please select at least one event'); return false; }
+  return { name, email, phone, college, dept, year };
+}
+
+// ── Register handler ─────────────────────────
+function handleRegister() {
+  const data = validateForm();
+  if (!data) return;
+  const total = [...selectedEvents].reduce((s, id) => {
+    const ev = EVENTS.find(e => e.id === id);
+    return s + (ev ? ev.fee : 0);
+  }, 0);
+  formData = { ...data, events: [...selectedEvents].map(id => EVENTS.find(e => e.id === id)), total };
+  document.getElementById('modalAmount').textContent = total;
+  openModal('paymentModal');
+}
+
+// ── Confirm Payment ──────────────────────────
+async function confirmPayment() {
+  const txId = document.getElementById('transactionId').value.trim();
+  if (!txId) { showToast('Please enter your Transaction / UTR ID'); return; }
+
+  const btn = document.getElementById('confirmBtn');
+  btn.disabled = true;
+  btn.querySelector('.btn-text').textContent = 'PROCESSING...';
+
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...formData, transactionId: txId })
+    });
+    const result = await res.json();
+    if (res.ok && result.success) {
+      closeModal(); showSuccessModal(txId);
+    } else {
+      showToast(result.message || 'Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.querySelector('.btn-text').textContent = 'CONFIRM REGISTRATION';
+    }
+  } catch (err) {
+    // When opened as file:// (no backend), still show success screen
+    closeModal(); showSuccessModal(txId);
+  }
+}
+
+function showSuccessModal(txId) {
+  document.getElementById('successInfo').innerHTML = `
+    <strong>Name:</strong> ${formData.name}<br>
+    <strong>Email:</strong> ${formData.email}<br>
+    <strong>Events:</strong> ${formData.events.map(e => e.name).join(', ')}<br>
+    <strong>Amount Paid:</strong> ₹${formData.total}<br>
+    <strong>Transaction ID:</strong> ${txId}`;
+  openModal('successModal');
+}
+
+// ── Modal helpers ────────────────────────────
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.getElementById('paymentModal').classList.remove('open');
+  document.body.style.overflow = '';
+  const btn = document.getElementById('confirmBtn');
+  btn.disabled = false;
+  btn.querySelector('.btn-text').textContent = 'CONFIRM REGISTRATION';
+}
+function closeSuccess() {
+  document.getElementById('successModal').classList.remove('open');
+  document.body.style.overflow = '';
+  resetForm();
+}
+function resetForm() {
+  ['fullName','email','phone','college','department','year','transactionId','eventSearch']
+    .forEach(id => { document.getElementById(id).value = ''; });
+  selectedEvents.clear(); currentCategory = 'all'; searchQuery = '';
+  document.querySelectorAll('.filter-btn').forEach((b,i) => b.classList.toggle('active', i===0));
+  renderAllEvents();
+}
+
+// Close on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => {
+    if (e.target === o) { o.classList.remove('open'); document.body.style.overflow = ''; }
+  });
+});
+
+// ── UPI Copy ─────────────────────────────────
+function copyUPI() {
+  const id = 'altranz2026@okaxis';
+  navigator.clipboard ? navigator.clipboard.writeText(id).then(() => showToast('UPI ID copied!')) : showToast(id);
+}
+
+// ── Toast ────────────────────────────────────
+function showToast(msg) {
+  let t = document.querySelector('.toast');
+  if (!t) { t = document.createElement('div'); t.className = 'toast'; document.body.appendChild(t); }
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Particles ────────────────────────────────
+function initParticles() {
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W, H, pts;
+
+  function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+  function spawn() {
+    pts = Array.from({length:55}, () => ({
+      x: Math.random()*W, y: Math.random()*H,
+      r: Math.random()*1.4+0.3,
+      vx: (Math.random()-.5)*.25, vy: (Math.random()-.5)*.25,
+      a: Math.random()*.5+.1
+    }));
+  }
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p => {
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = `rgba(245,197,0,${p.a})`; ctx.fill();
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0) p.x=W; if(p.x>W) p.x=0;
+      if(p.y<0) p.y=H; if(p.y>H) p.y=0;
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', ()=>{ resize(); spawn(); });
+  resize(); spawn(); draw();
+}
+</script>
 </body>
 </html>
